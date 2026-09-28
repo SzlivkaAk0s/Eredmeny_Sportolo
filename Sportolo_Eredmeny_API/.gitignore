@@ -1,0 +1,11 @@
+﻿Visual Studio files
+.vs/
+*.user
+*.suo
+
+# Build outputs
+bin/
+obj/
+
+# Environment secrets
+appsettings.Development.json
