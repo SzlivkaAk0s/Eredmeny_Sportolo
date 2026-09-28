@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Sportolo_Eredmeny_API.Models;
 using MySqlConnector;
+using Sportolo_Eredmeny_API.Models;
 using Sportolo_Eredmeny_API.Models.DTOs;
+using System.Xml.Linq;
 
 namespace Sportolo_Eredmeny_API.Controllers
 {
@@ -151,5 +152,44 @@ namespace Sportolo_Eredmeny_API.Controllers
             return new { message = "Sikeres törlés", result = "" };
         }
 
+        [HttpGet("Sportolo_byId")]
+        public object GetSportoloById(int id)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+            connection.Open();
+
+            string sql = @"SELECT `name`,`email` FROM `sportolo` WHERE `id` = @id";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            
+            cmd.Parameters.AddWithValue("@id", id);
+
+            var datareader = cmd.ExecuteReader();
+
+            object? data = null;
+
+            if (datareader.Read() == true)
+            {
+                var sportolo = new Sportolo
+                {
+                    //id = datareader.GetInt32("id"),
+                    name = datareader.GetString("name"),
+                    email = datareader.GetString("email"),
+                    //age = datareader.GetInt32("age"),
+                    //password = datareader.GetString("password"),
+                    //registrationTime = datareader.GetDateTime("registrationTime")
+                }
+                ;
+                data = new { message = "Sikeres lekérdezés", result = sportolo };
+            }
+            else
+            {
+                data = new { message = "Nincs ilyen eredmeny", result = "" };
+            }
+
+            connection.Close();
+            return data;
+        }
     }
 }
