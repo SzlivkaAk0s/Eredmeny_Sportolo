@@ -44,5 +44,44 @@ namespace Sportolo_Eredmeny_API.Controllers
 
             return eredmenyek;
         }
+
+        [HttpGet("byId")]
+        public object GetEredmenyById(int id)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+            connection.Open();
+
+            string sql = @"SELECT * FROM `eredmeny` WHERE `id` = @id";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@id", id);
+
+            var datareader = cmd.ExecuteReader();
+
+            object? data = null;
+
+            if (datareader.Read() == true)
+            {
+                var eredmeny = new Eredmeny
+                {
+                    Id = datareader.GetInt32("id"),
+                    Competition = datareader.GetString("competition"),
+                    Description = datareader.GetString("description"),
+                    ResultTime = datareader.GetDateTime("resultTime"),
+                    UpdateTime = datareader.GetDateTime("updateTime"),
+                    SportoloId = datareader.GetInt32("sportoloId")
+                }
+                ;
+                data = new { message = "Sikeres lekérdezés", result = eredmeny };
+            }
+            else
+            {
+                data = new { message = "Nincs ilyen eredmeny", result = "" };
+            }
+
+            connection.Close();
+            return data;
+        }
     }
 }
