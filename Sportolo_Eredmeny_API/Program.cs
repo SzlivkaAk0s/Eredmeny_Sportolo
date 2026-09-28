@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 
 namespace Sportolo_Eredmeny_API
 {
@@ -19,6 +20,7 @@ namespace Sportolo_Eredmeny_API
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
 
             app.UseHttpsRedirection();
