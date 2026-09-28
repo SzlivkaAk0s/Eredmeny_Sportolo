@@ -108,5 +108,29 @@ namespace Sportolo_Eredmeny_API.Controllers
             connection.Close();
             return new { message = "Sikeres felvétel", result = addNewEredmenyDto };
         }
+
+        [HttpPut]
+        public object UpdateEredmeny([FromQuery] int id, UpdateEredmenyDTO updateEredmenyDTO)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+
+            connection.Open();
+
+            var sql = @"UPDATE `eredmeny` SET `Competition`=@Competetion,`Description`=@Description,`UpdateTime`=@UpdateTime WHERE `Id` = @id;";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@Competetion", updateEredmenyDTO.Competition);
+            cmd.Parameters.AddWithValue("@Description", updateEredmenyDTO.Description);
+            cmd.Parameters.AddWithValue("@UpdateTime", DateTime.Now);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            cmd.ExecuteNonQuery();
+
+            connection.Close();
+
+            return new { message = "Sikeres frissítés", result = updateEredmenyDTO };
+        }
+
     }
 }
