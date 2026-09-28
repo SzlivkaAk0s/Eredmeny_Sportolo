@@ -207,7 +207,26 @@ namespace Sportolo_Eredmeny_API.Controllers
 
             connection.Close();
 
-            return new { message = "Sikeres frissítés", message2 = "Az összes adat: ", result =  count};
+            return new { message = "Sikeres lekérdezés", message2 = "Az összes adat:", result =  count};
+        }
+
+        [HttpGet("AllRecordByPlayer")]
+        public object GetAllEredmenyByPlayer(int SportoloId)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+
+            connection.Open();
+
+            string sql = @"SELECT COUNT(Id) FROM `eredmeny` WHERE `SportoloId` = @SportoloId";
+
+            var cmd = new MySqlCommand(sql, connection);
+            cmd.Parameters.AddWithValue("@SportoloId", SportoloId);
+
+            var count = Convert.ToInt32(cmd.ExecuteScalar());
+
+            connection.Close();
+
+            return new { message = "Sikeres lekérdezés", message2 = "Az összes eredmény tőle:", result = count };
         }
     }
 }
