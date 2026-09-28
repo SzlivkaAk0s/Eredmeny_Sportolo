@@ -191,5 +191,23 @@ namespace Sportolo_Eredmeny_API.Controllers
             connection.Close();
             return data;
         }
+
+        [HttpGet("AllRecord")]
+        public object GetAllEredmeny()
+        {
+            var connection = new MySqlConnection(ConnectionString);
+
+            connection.Open();
+
+            string sql = @"SELECT COUNT(Id) FROM `eredmeny`";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            var count = Convert.ToInt32(cmd.ExecuteScalar());
+
+            connection.Close();
+
+            return new { message = "Sikeres frissítés", message2 = "Az összes adat: ", result =  count};
+        }
     }
 }
