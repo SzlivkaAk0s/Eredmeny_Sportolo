@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Sportolo_Eredmeny_API.Models;
 using MySqlConnector;
+using Sportolo_Eredmeny_API.Models.DTOs;
 
 namespace Sportolo_Eredmeny_API.Controllers
 {
@@ -82,6 +83,30 @@ namespace Sportolo_Eredmeny_API.Controllers
 
             connection.Close();
             return data;
+        }
+
+        [HttpPost]
+        public object AddNewEredmeny([FromBody] AddNewEredmenyDTO addNewEredmenyDto)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+
+            connection.Open();
+
+            string sql = @"INSERT INTO `eredmeny`(`Competition`, `Description`, `ResultTime`, `UpdateTime`, `SportoloId`) VALUES (@Competition, @Description, @ResultTime, @UpdateTime, @SportoloId)";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@Competition", addNewEredmenyDto.Competition);
+            cmd.Parameters.AddWithValue("@Description", addNewEredmenyDto.Description);
+            cmd.Parameters.AddWithValue("@ResultTime", DateTime.Now);
+            cmd.Parameters.AddWithValue("@UpdateTime", DateTime.Now);
+            cmd.Parameters.AddWithValue("@SportoloId", addNewEredmenyDto.SportoloId);
+
+
+            cmd.ExecuteNonQuery();
+
+            connection.Close();
+            return new { message = "Sikeres felvétel", result = addNewEredmenyDto };
         }
     }
 }
